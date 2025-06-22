@@ -31,10 +31,11 @@ app.use(
 );
 
 //This(/api/auth) is the base path. Any route defined inside authRoutes will be prefixed with /api/auth.
-app.use("/api/auth", authRoutes);
-app.use("/api/messages", messageRoutes);
-app.use("/api/users", userRoutes);
-app.use("/api/group", groupChatRoutes);
+// app.use("/api/auth", authRoutes);
+// app.use("/api/messages", messageRoutes);
+// app.use("/api/users", userRoutes);
+// app.use("/api/group", groupChatRoutes);
+// app.use("/api/chat", groupChatRoutes);
 
 if (process.env.NODE_ENV === "production") {
   // Serve static files from the React app
