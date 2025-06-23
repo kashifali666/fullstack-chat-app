@@ -15,10 +15,8 @@ dotenv.config();
 connectDB();
 
 const PORT = process.env.PORT;
-const __filename = new URL(import.meta.url).pathname;
-const __dirname = path.dirname(__filename);
 
-// const __dirname = path.resolve();
+const __dirname = path.resolve();
 
 // body parser middleware (req.body)
 app.use(express.json({ limit: "10mb" }));
@@ -40,13 +38,17 @@ app.use("/api/users", userRoutes);
 app.use("/api/group", groupChatRoutes);
 
 if (process.env.NODE_ENV === "production") {
-  const buildPath = path.join(__dirname, "..", "..", "frontend", "dist");
+  // Now, since __dirname is the project root (/opt/render/project/src/),
+  // we just need to go into 'frontend' then 'dist'.
+  const buildPath = path.join(__dirname, "frontend", "dist");
+
+  console.log(`Serving static files from: ${buildPath}`);
 
   // Serve static files from the frontend build folder
   app.use(express.static(buildPath));
 
   // The "catchall" handler: for any request that doesn't match an API route
-  // or a static file, send back index.html. This allows React Router to handle client-side routing.
+  // or a static file, send back index.html.
   app.get("*", (req, res) => {
     res.sendFile(path.join(buildPath, "index.html"));
   });
