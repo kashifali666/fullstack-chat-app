@@ -40,9 +40,10 @@ app.use("/api/group", groupChatRoutes);
 if (process.env.NODE_ENV === "production") {
   // Now, since __dirname is the project root (/opt/render/project/src/),
   // we just need to go into 'frontend' then 'dist'.
-  const buildPath = path.join(__dirname, "frontend", "dist");
+  const buildPath = path.join(__dirname, "..", "frontend", "dist");
 
-  console.log(`Serving static files from: ${buildPath}`);
+  console.log(`DEBUG: __dirname is: ${__dirname}`);
+  console.log(`DEBUG: buildPath is: ${buildPath}`);
 
   // Serve static files from the frontend build folder
   app.use(express.static(buildPath));
