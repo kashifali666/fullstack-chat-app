@@ -110,8 +110,8 @@ export const getGroups = async (req, res) => {
 
     // Find all chats where the current user is a participant and it's a group chat
     const groups = await Chat.find({
-      users: { $elemMatch: { $eq: userId } }, // Find chats where 'users' array contains 'userId'
-      isGroupChat: true, // Ensure it's a group chat
+      users: { $elemMatch: { $eq: userId } },
+      isGroupChat: true,
     })
       .populate("users", "-password")
       .populate("groupAdmin", "-password")
