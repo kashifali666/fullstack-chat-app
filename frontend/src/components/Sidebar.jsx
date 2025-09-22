@@ -76,13 +76,13 @@ const Sidebar = () => {
             key={user._id}
             onClick={() => {
               setSelectedUser(user);
-              // Find the 1-to-1 chat object for this user
+              
               const chat = chats.find(
                 (c) => !c.isGroupChat && c.users.some((u) => u._id === user._id)
               );
               console.log("Selected chat:", chat);
               setSelectedChat(chat || null);
-              setSelectedGroup(null); // Deselect group if needed
+              setSelectedGroup(null); 
             }}
             className={`
         w-full p-3 flex items-center gap-3
@@ -108,7 +108,7 @@ const Sidebar = () => {
               )}
             </div>
 
-            {/* User info - only visible on larger screens */}
+            
             <div className="hidden lg:block text-left min-w-0">
               <div className="font-medium truncate">{user.fullName}</div>
               <div className="text-sm text-zinc-400">
