@@ -17,7 +17,7 @@ const ProfilePage = () => {
 
     reader.onload = async () => {
       const base64Image = reader.result;
-      console.log("Base64 Image:", base64Image); // ✅ ADD THIS LINE
+      console.log("Base64 Image:", base64Image);
 
       setSelectedImg(base64Image);
       await updateProfile({ profilePic: base64Image });
@@ -33,7 +33,7 @@ const ProfilePage = () => {
             <p className="mt-2">Your profile information</p>
           </div>
 
-          {/* avatar upload section */}
+          
 
           <div className="flex flex-col items-center gap-4">
             <div className="relative">
