@@ -61,7 +61,7 @@ export const createGroupChat = async (req, res) => {
   }
 };
 
-// Add users to group chat
+
 export const addToGroup = async (req, res) => {
   const { chatId, userId } = req.body;
 
@@ -80,7 +80,7 @@ export const addToGroup = async (req, res) => {
   }
 };
 
-// Remove users from group chat
+
 export const removeFromGroup = async (req, res) => {
   const { chatId, userId } = req.body;
 
@@ -99,7 +99,7 @@ export const removeFromGroup = async (req, res) => {
   }
 };
 
-// getting all groups for the authenticated user
+
 export const getGroups = async (req, res) => {
   try {
     const userId = req.user._id;
@@ -108,7 +108,7 @@ export const getGroups = async (req, res) => {
       return res.status(400).json({ message: "User not authenticated." });
     }
 
-    // Find all chats where the current user is a participant and it's a group chat
+    
     const groups = await Chat.find({
       users: { $elemMatch: { $eq: userId } },
       isGroupChat: true,
@@ -129,26 +129,26 @@ export const deleteGroupChat = async (req, res) => {
     const { groupId } = req.params;
     const userId = req.user._id;
 
-    // Find the group chat
+    
     const group = await Chat.findById(groupId);
     if (!group) {
       return res.status(404).json({ message: "Group chat not found" });
     }
 
-    // Check if the requester is the group admin
+    
     if (group.groupAdmin.toString() !== userId.toString()) {
       return res
         .status(403)
         .json({ message: "Only the group admin can delete this group." });
     }
 
-    // Delete all messages in this group
+    
     await Message.deleteMany({ chat: groupId });
 
-    // Delete the group chat itself
+    
     await Chat.findByIdAndDelete(groupId);
 
-    // Notify all group members in real-time
+    
     io.to(groupId).emit("groupDeleted", { groupId });
 
     res.status(200).json({ message: "Group chat deleted" });
@@ -167,7 +167,7 @@ export const exitGroup = async (req, res) => {
       return res.status(404).json({ message: "Group not found" });
     }
 
-    // Prevent admin from exiting (they should delete the group instead)
+    
     if (group.groupAdmin.toString() === userId.toString()) {
       return res
         .status(403)
@@ -176,7 +176,7 @@ export const exitGroup = async (req, res) => {
         });
     }
 
-    // Remove user from group
+    
     group.users = group.users.filter((u) => u.toString() !== userId.toString());
     await group.save();
 
