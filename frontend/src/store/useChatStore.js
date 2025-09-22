@@ -1,33 +1,33 @@
 import { create } from "zustand";
 import toast from "react-hot-toast";
 import { axiosInstance } from "../lib/axios";
-import { useAuthStore } from "./useAuthStore"; // Make sure useAuthStore is properly imported for socket access
+import { useAuthStore } from "./useAuthStore";
 
 export const useChatStore = create((set, get) => ({
-  chats: [], // This might eventually become a unified list of all chats (1-on-1 and group)
+  chats: [], 
   setChats: (chats) => set({ chats }),
 
   selectedChat: null,
   setSelectedChat: (selectedChat) => set({ selectedChat }),
 
-  // User chat state (for 1-on-1)
-  messages: [], // Messages for the currently selected 1-on-1 chat
-  users: [], // List of available users for 1-on-1 chats
+  
+  messages: [],
+  users: [],
   selectedUser: null,
 
-  // Group chat state
-  groups: [], // List of group chats the user is a member of
-  selectedGroup: null, // The currently selected group chat
-  groupMessages: [], // Messages for the currently selected group chat
+  
+  groups: [],
+  selectedGroup: null,
+  groupMessages: [], 
 
-  // Loading states
+  
   isUsersLoading: false,
   isMessagesLoading: false,
-  isGroupsLoading: false, // New loading state for groups
+  isGroupsLoading: false,
 
-  // ========= SETTERS =========
+  
   setSelectedUser: (selectedUser) => set({ selectedUser }),
-  setSelectedGroup: (selectedGroup) => set({ selectedGroup }), // Clear 1-on-1 messages when group is selected
+  setSelectedGroup: (selectedGroup) => set({ selectedGroup }), 
 
   setUsers: (users) => set({ users }),
   setGroups: (groups) => set({ groups }),
@@ -48,13 +48,13 @@ export const useChatStore = create((set, get) => ({
       "selectedUser:",
       get().selectedUser
     );
-  }, // Explicit setter for 1-on-1 messages
+  }, 
 
-  // ========= FETCH USERS (for 1-on-1 contacts) =========
+  
   getUsers: async () => {
     set({ isUsersLoading: true });
     try {
-      const res = await axiosInstance.get("/messages/users"); // Assuming this fetches users for 1-on-1 chats
+      const res = await axiosInstance.get("/messages/users"); 
       set({ users: res.data });
     } catch (error) {
       toast.error(error.response?.data?.message || "Failed to fetch users");
@@ -63,13 +63,13 @@ export const useChatStore = create((set, get) => ({
     }
   },
 
-  // ========= FETCH GROUPS =========
+  
   getGroups: async () => {
     console.log("useChatStore: >>> INVOKING getGroups <<<");
     set({ isGroupsLoading: true });
     console.log("useChatStore: -> START fetching groups.");
     try {
-      // 🚨 CORRECTED URL: Matches 'GET /api/group/'
+      
       const res = await axiosInstance.get("/group");
       console.log(
         "useChatStore: Groups API call successful. Raw Data received:",
@@ -108,25 +108,24 @@ export const useChatStore = create((set, get) => ({
     }
   },
 
-  // ========= FETCH MESSAGES (Unified for 1-on-1 and Group) =========
-  // This needs to be smarter to handle whether it's a 1-on-1 or group chat ID
+ 
   getMessages: async (chatOrRecipientId, isGroup = false) => {
     set({ isMessagesLoading: true });
     try {
       let res;
       if (isGroup) {
-        // 🚨 CORRECTED URL: Matches 'GET /api/messages/group/:groupId'
-        res = await axiosInstance.get(`/messages/group/${chatOrRecipientId}`); // Example group message API
+        
+        res = await axiosInstance.get(`/messages/group/${chatOrRecipientId}`); 
         console.log("Fetched group messages:", res.data);
         set({ groupMessages: Array.isArray(res.data) ? res.data : [] });
       } else {
-        // Assuming you have an API for fetching 1-on-1 messages by recipientId
+        
         res = await axiosInstance.get(`/messages/${chatOrRecipientId}`);
         set({ messages: Array.isArray(res.data) ? res.data : [] });
       }
     } catch (error) {
       toast.error(error.response?.data?.message || "Failed to fetch messages");
-      // On error, also set to empty array to avoid undefined/null
+      
       if (isGroup) {
         set({ groupMessages: [] });
       } else {
@@ -137,7 +136,7 @@ export const useChatStore = create((set, get) => ({
     }
   },
 
-  // ========= SEND MESSAGE (Unified for 1-on-1 and Group) =========
+  
   sendMessage: async (messageData) => {
     const { selectedUser, selectedGroup, messages, groupMessages } = get();
     console.log(
@@ -148,14 +147,14 @@ export const useChatStore = create((set, get) => ({
     );
 
     let endpoint;
-    // `recipientId` isn't strictly needed here for the endpoint, but `chatId` for group messages is.
+    
 
     if (selectedGroup) {
-      // 🚨 CORRECTED URL: Matches 'POST /api/messages/group/send'
+      
       endpoint = "/messages/group/send";
-      messageData.chatId = selectedGroup._id; // Add chatId to the messageData for group messages
+      messageData.chatId = selectedGroup._id; 
     } else if (selectedUser) {
-      endpoint = `/messages/send/${selectedUser._id}`; // Matches 'POST /api/messages/send/:id'
+      endpoint = `/messages/send/${selectedUser._id}`; 
     } else {
       toast.error("No recipient or group selected");
       return;
@@ -165,7 +164,7 @@ export const useChatStore = create((set, get) => ({
       const res = await axiosInstance.post(endpoint, messageData);
       const newMessage = res.data;
 
-      // Optimistically update the UI with the new message
+      
       if (selectedGroup) {
         set({ groupMessages: [...groupMessages, newMessage] });
       } else {
@@ -176,8 +175,7 @@ export const useChatStore = create((set, get) => ({
     }
   },
 
-  // ========= SOCKET MESSAGE HANDLING =========
-  // This needs careful adjustment for group messages
+ 
   subscribeToMessages: () => {
     const socket = useAuthStore.getState().socket;
     if (!socket) {
@@ -189,7 +187,7 @@ export const useChatStore = create((set, get) => ({
     socket.off("messageDeleted");
 
     socket.on("newMessage", (newMessage) => {
-      // Always use the latest selectedGroup from the store
+      
       const currentGroupId = get().selectedGroup?._id;
       const currentUser = get().selectedUser;
       const authUser = useAuthStore.getState().authUser;
@@ -234,12 +232,12 @@ export const useChatStore = create((set, get) => ({
     }
   },
 
-  // ========= GROUP CHAT ACTIONS =========
+  
   createGroupChat: async (groupName, userIds) => {
     console.log("Inside store createGroupChat with:", groupName, userIds);
     try {
       const res = await axiosInstance.post("/group/creategroup", {
-        // Adjusted URL
+        
         name: groupName,
         users: JSON.stringify(userIds),
       });
@@ -247,7 +245,7 @@ export const useChatStore = create((set, get) => ({
       const newGroup = res.data;
       console.log("useChatStore: New group created by API:", newGroup);
 
-      // Add new group to existing groups list
+     
       set((state) => {
         const updatedGroups = [newGroup, ...state.groups];
         console.log(
@@ -275,13 +273,13 @@ export const useChatStore = create((set, get) => ({
   addToGroup: async (chatId, userId) => {
     try {
       const res = await axiosInstance.put("/group/groupadd", {
-        // Adjusted URL
+        
         chatId,
         userId,
       });
-      // Update the selected group in state after adding a user
+      
       set({ selectedGroup: res.data });
-      // You might also want to update the 'groups' array if that's how you display them
+      
       set((state) => ({
         groups: state.groups.map((group) =>
           group._id === chatId ? res.data : group
@@ -297,13 +295,13 @@ export const useChatStore = create((set, get) => ({
   removeFromGroup: async (chatId, userId) => {
     try {
       const res = await axiosInstance.put("/group/groupremove", {
-        // Adjusted URL
+        
         chatId,
         userId,
       });
-      // Update the selected group in state after removing a user
+     
       set({ selectedGroup: res.data });
-      // You might also want to update the 'groups' array if that's how you display them
+      
       set((state) => ({
         groups: state.groups.map((group) =>
           group._id === chatId ? res.data : group
