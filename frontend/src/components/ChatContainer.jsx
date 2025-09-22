@@ -101,7 +101,7 @@ const ChatContainer = () => {
     return () => socket.off("chatDeleted", handler);
   }, []);
 
-  // --- Handlers ---
+  
   const handleSearch = async (e) => {
     setSearch(e.target.value);
     try {
@@ -214,7 +214,7 @@ const ChatContainer = () => {
 
   return (
     <div className="flex-1 flex flex-col overflow-auto bg-gray-50 dark:bg-gray-800 rounded-lg shadow-md">
-      {/* --- Toggle between individual and group chats --- */}
+      
       <div className="p-2 border-b bg-white dark:bg-gray-900 flex flex-wrap gap-2 overflow-x-auto items-center">
         <button
           onClick={() => {
@@ -261,7 +261,7 @@ const ChatContainer = () => {
 
       <ChatHeader />
 
-      {/* --- Delete 1-on-1 Chat Button (only when a user is selected and not in group chat) --- */}
+      
       {selectedUser && !selectedGroup && (
         <div className="flex justify-end px-4 py-2">
           <button
@@ -275,7 +275,7 @@ const ChatContainer = () => {
         </div>
       )}
 
-      {/* 👥 Group Member Section - Visible only if a group is selected */}
+      
       {selectedGroup && (
         <div className="bg-gray-100 dark:bg-gray-700 p-4 rounded-b-lg mb-4 mx-2">
           <h2 className="text-sm font-semibold mb-2 text-gray-800 dark:text-gray-200">
@@ -303,7 +303,7 @@ const ChatContainer = () => {
             ))}
           </div>
 
-          {/* Add/Search UI for admin */}
+          
           {authUser._id === selectedGroup.groupAdmin._id && (
             <>
               <input
@@ -336,7 +336,7 @@ const ChatContainer = () => {
                 </div>
               )}
 
-              {/* --- Delete Group Button (admin only, at the bottom) --- */}
+              
               <button
                 onClick={handleDeleteGroup}
                 disabled={isDeletingGroup}
@@ -347,7 +347,7 @@ const ChatContainer = () => {
             </>
           )}
 
-          {/* Exit Group Button for non-admins */}
+          
           {authUser._id !== selectedGroup.groupAdmin._id && (
             <button
               onClick={handleExitGroup}
@@ -359,7 +359,7 @@ const ChatContainer = () => {
         </div>
       )}
 
-      {/* 💬 Messages Display Area */}
+      
       <AllChats
         messages={selectedGroup ? groupMessages : messages}
         selectedUser={selectedUser}
