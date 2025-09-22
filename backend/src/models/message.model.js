@@ -10,14 +10,14 @@ const messageSchema = new mongoose.Schema(
     receiverId: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "User",
-      required: false, // Optional for group chats
+      required: false,
     },
 
     text: {
       type: String,
     },
 
-    chat: { type: mongoose.Schema.Types.ObjectId, ref: "Chat" }, // For group chats
+    chat: { type: mongoose.Schema.Types.ObjectId, ref: "Chat" },
     image: {
       type: String,
     },
