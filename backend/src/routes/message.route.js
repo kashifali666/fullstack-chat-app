@@ -13,7 +13,7 @@ import verifyGroupMembership from "../middleware/verifyGroupMembership.js";
 
 const router = express.Router();
 
-// message.route.js (mounted under /api/messages in index.js)
+
 router.get("/users", protectRoute, getUsersForSidebar);
 router.get("/:id", protectRoute, getMessages);
 
