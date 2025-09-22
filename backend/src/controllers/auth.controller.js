@@ -28,7 +28,7 @@ export const signup = async (req, res) => {
     });
 
     if (newUser) {
-      // generate jwt token here
+      
       generateToken(newUser._id, res);
       await newUser.save();
 
@@ -94,7 +94,7 @@ export const updateProfile = async (req, res) => {
     const uploadResponse = await cloudinary.uploader.upload(profilePic);
     
 
-    // to save the url of the profile picture in the database
+    
     const updatedUser = await User.findByIdAndUpdate(
       userId,
       { profilePic: uploadResponse.secure_url },
@@ -108,7 +108,7 @@ export const updateProfile = async (req, res) => {
   }
 };
 
-// route for Authenticated user(will check if user is authenticated or not)
+
 export const checkAuth = (req, res) => {
   try {
     res.status(200).json(req.user);
