@@ -12,17 +12,13 @@ import path from "path";
 
 dotenv.config();
 
-// *** Add this error handling at the very beginning ***
+
 process.on("unhandledRejection", (reason, promise) => {
   console.error("UNHANDLED REJECTION!", reason);
-  // Optionally, exit the process after logging.
-  // process.exit(1);
 });
 
 process.on("uncaughtException", (err) => {
   console.error("UNCAUGHT EXCEPTION!", err);
-  // Optionally, exit the process after logging.
-  // process.exit(1);
 });
 
 connectDB();
@@ -31,10 +27,10 @@ const PORT = process.env.PORT || 5000;
 
 const __dirname = path.resolve();
 
-// body parser middleware (req.body)
+
 app.use(express.json({ limit: "10mb" }));
 
-// cookie parser middleware (req.cookies)
+
 app.use(cookieParser());
 
 app.use(
@@ -44,7 +40,7 @@ app.use(
   })
 );
 
-// This(/api/auth) is the base path. Any route defined inside authRoutes will be prefixed with /api/auth.
+
 app.use("/api/auth", authRoutes);
 app.use("/api/messages", messageRoutes);
 app.use("/api/users", userRoutes);
@@ -56,11 +52,10 @@ if (process.env.NODE_ENV === "production") {
   console.log(`DEBUG: __dirname is: ${__dirname}`);
   console.log(`DEBUG: buildPath is: ${buildPath}`);
 
-  // Serve static files from the frontend build folder
+  
   app.use(express.static(buildPath));
 
-  // The "catchall" handler: for any request that doesn't match an API route
-  // or a static file, send back index.html.
+  
   app.get("*", (req, res) => {
     res.sendFile(path.join(buildPath, "index.html"));
   });
@@ -72,5 +67,5 @@ try {
   });
 } catch (error) {
   console.error("Error starting server:", error);
-  process.exit(1); // Exit if server fails to start
+  process.exit(1);
 }
