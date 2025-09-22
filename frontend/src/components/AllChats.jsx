@@ -10,7 +10,7 @@ const AllChats = ({ messages, selectedUser, selectedGroup }) => {
   const { setMessages, setGroupMessages } = useChatStore();
   const messageEndRef = useRef(null);
 
-  // Handler to delete a message
+  
   const handleDeleteMessage = async (messageId) => {
     try {
       await axiosInstance.delete(`/messages/${messageId}`);
@@ -37,14 +37,14 @@ const AllChats = ({ messages, selectedUser, selectedGroup }) => {
     }
   };
 
-  // Scroll to latest message
+  
   useEffect(() => {
     if (messageEndRef.current) {
       messageEndRef.current.scrollIntoView({ behavior: "smooth" });
     }
   }, [messages]);
 
-  // Always use an array for messages
+  
   const safeMessages = Array.isArray(messages) ? messages : [];
 
   console.log(
