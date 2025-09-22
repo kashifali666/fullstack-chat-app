@@ -11,7 +11,7 @@ import {
 
 const router = express.Router();
 
-// groupChat.route.js (mounted under /api/group AND /api/chat in index.js)
+
 router.post("/creategroup", protectRoute, createGroupChat);
 router.put("/groupadd", protectRoute, addToGroup);
 router.put("/groupremove", protectRoute, removeFromGroup);
